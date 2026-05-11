@@ -1,0 +1,81 @@
+appVersion: v1
+kind: ConfigMap
+meatdata:
+  name: shipping
+  namespace: roboshop
+data:
+  CART_ENDPOINT: "cart:8080"
+  DB_HOST: "mysql"
+
+---
+appVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: shipping
+  namespace: roboshop
+  labels:
+    project: roboshop
+    component: shipping
+    tier: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: roboshop
+      component: shipping
+      tier: backend
+
+  template:
+    metadata: 
+      labels:
+        project: roboshop
+        component: shipping
+        tier: backend
+    
+    spec:
+      containers:
+      - name: shipping
+        image: vikasvanamala/shipping:v1
+        imagePullPolicy: Always
+        envFrom:
+        - ConfigMapRef:
+            name: shipping
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 20
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 20
+
+---
+appVersion: v1
+kind: Service
+
+metadata:
+  name: shipping
+  namespace: roboshop
+
+spec:
+  selector:
+    project: roboshop
+    component: shipping
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+
+
+
