@@ -1,6 +1,6 @@
-appVersion: v1
+apiVersion: v1
 kind: ConfigMap
-meatdata:
+metadata:
   name: user
   namespace: roboshop
 data:
@@ -9,7 +9,7 @@ data:
   MONGO_URL: "mongodb://mongodb:27017/users"
 
 ---
-appVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 
 metadata:
@@ -41,7 +41,7 @@ spec:
         image: vikasvanamala/user:v1
         imagePullPolicy: Always
         envFrom:
-        - ConfigMapRef:
+        - configMapRef:
             name: user
         ports:
         - name: liveness-port
@@ -60,7 +60,7 @@ spec:
           periodSeconds: 20
 
 ---
-appVersion: v1
+apiVersion: v1
 kind: Service
 
 metadata:
