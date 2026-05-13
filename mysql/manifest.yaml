@@ -59,7 +59,7 @@ spec:
       volumes:
       - name: mysql-config
         ConfigMap:
-          mysql
+          name: mysql
 
 ---
 apiVersion: v1
@@ -75,7 +75,7 @@ spec:
     component: mysql
     tier: db
   ports:
-    protocol: TCP
+  - protocol: TCP
     port: 3306
     targetPort: 3306
 
