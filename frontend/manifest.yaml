@@ -119,7 +119,7 @@ spec:
           failureThreshold: 1
           periodSeconds: 20
         volumeMounts:
-        - name: ngnix-config
+        - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       volumes:
