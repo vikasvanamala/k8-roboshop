@@ -101,7 +101,7 @@ spec:
         image: vikasvanamala/frontend:v1
         imagePullPolicy: Always
         envFrom:
-        - ConfigMapRef:
+        - configMapRef:
             name: frontend
         ports:
         - name: liveness-port
@@ -121,10 +121,10 @@ spec:
         volumeMounts:
         - name: ngnix-config
           mountPath: etc/nginx/nginx.conf
-          subpath: nginx.conf
+          subPath: nginx.conf
       volumes:
       - name: nginx-config
-        ConfigMap:
+        configMap:
           name: frontend  
 ---
 apiVersion: v1
