@@ -1,6 +1,6 @@
-appVersion: v1
+apiVersion: v1
 kind: ConfigMap
-meatdata:
+metadata:
   name: cart
   namespace: roboshop
 data:
@@ -9,7 +9,7 @@ data:
   CATALOGUE_PORT: 8080
 
 ---
-appVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 
 metadata:
@@ -41,7 +41,7 @@ spec:
         image: vikasvanamala/cart:v1
         imagePullPolicy: Always
         envFrom:
-        - ConfigMapRef:
+        - configMapRef:
             name: cart
         ports:
         - name: liveness-port
@@ -60,7 +60,7 @@ spec:
           periodSeconds: 20
 
 ---
-appVersion: v1
+apiVersion: v1
 kind: Service
 
 metadata:
