@@ -54,11 +54,11 @@ spec:
         volumeMounts:
         - name: mysql-config
           mountPath: /etc/mysql/conf.d/my.cnf
-          subpath: my.cnf
+          subPath: my.cnf
       
       volumes:
       - name: mysql-config
-        ConfigMap:
+        configMap:
           name: mysql
 
 ---
