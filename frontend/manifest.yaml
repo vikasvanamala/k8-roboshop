@@ -13,13 +13,13 @@ data:
     include /usr/share/nginx/modules/*.conf;
 
     events {
-        worker_connections 1024;
+      worker_connections 1024;
     }
 
     http {
         log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                          '$status $body_bytes_sent "$http_referer" '
-                          '"$http_user_agent" "$http_x_forwarded_for"';
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
 
         access_log  /var/log/nginx/access.log  main;
 
@@ -34,8 +34,8 @@ data:
         include /etc/nginx/conf.d/*.conf;
 
         server {
-            listen       8080;
-            listen       [::]:8080;
+            listen       80;
+            listen       [::]:80;
             server_name  _;
             root         /usr/share/nginx/html;
 
@@ -64,40 +64,45 @@ data:
               stub_status on;
               access_log off;
             }
-
         }
     }
+
+
 ---
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: frontend
   namespace: roboshop
-  # these are replica set labels
   labels:
     project: roboshop
     component: frontend
-    tier: frontend
+    tier: backend
+
 spec:
   replicas: 1
   selector:
-    # these labels are used to select pods
     matchLabels:
       project: roboshop
       component: frontend
-      tier: frontend
-  # pod definition
+      tier: backend
+
   template:
-    metadata:
+    metadata: 
       labels:
         project: roboshop
         component: frontend
-        tier: frontend
+        tier: backend
+    
     spec:
       containers:
       - name: frontend
         image: vikasvanamala/frontend:v1
         imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: frontend
         ports:
         - name: liveness-port
           containerPort: 8080
@@ -106,13 +111,13 @@ spec:
             path: /
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 15
+          periodSeconds: 20
         livenessProbe:
           httpGet:
             path: /
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 15
+          periodSeconds: 20
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
@@ -120,20 +125,26 @@ spec:
       volumes:
       - name: nginx-config
         configMap:
-          name: frontend
+          name: frontend  
 ---
 apiVersion: v1
 kind: Service
+
 metadata:
   name: frontend
   namespace: roboshop
+
 spec:
   type: LoadBalancer
   selector:
     project: roboshop
     component: frontend
-    tier: frontend
+    tier: backend
   ports:
     - protocol: TCP
-      port: 80 # service port
-      targetPort: 8080 # container port
+      port: 80
+      targetPort: 8080
+
+
+
+
