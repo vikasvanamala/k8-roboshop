@@ -1,6 +1,6 @@
-appVersion: v1
+apiVersion: v1
 kind: ConfigMap
-meatdata:
+metadata:
   name: shipping
   namespace: roboshop
 data:
@@ -8,7 +8,7 @@ data:
   DB_HOST: "mysql"
 
 ---
-appVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 
 metadata:
@@ -40,7 +40,7 @@ spec:
         image: vikasvanamala/shipping:v1
         imagePullPolicy: Always
         envFrom:
-        - ConfigMapRef:
+        - configMapRef:
             name: shipping
         ports:
         - name: liveness-port
@@ -59,7 +59,7 @@ spec:
           periodSeconds: 20
 
 ---
-appVersion: v1
+apiVersion: v1
 kind: Service
 
 metadata:
