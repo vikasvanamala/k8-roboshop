@@ -120,7 +120,7 @@ spec:
           periodSeconds: 20
         volumeMounts:
         - name: ngnix-config
-          mountPath: etc/nginx/nginx.conf
+          mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       volumes:
       - name: nginx-config
